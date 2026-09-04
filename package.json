@@ -1,0 +1,51 @@
+{
+  "name": "android-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server that lets AI assistants (Claude, OpenCode, VS Code) control Android devices securely via ADB.",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "mcp",
+    "ai",
+    "android",
+    "adb",
+    "automation",
+    "server"
+  ],
+  "author": {
+    "name": "Neiyan Eusse",
+    "email": "neiyaneusse357@gmail.com",
+    "url": "https://github.com/Neem2004"
+  },
+  "license": "ISC",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Neem2004/android-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Neem2004/android-mcp-server/issues"
+  },
+  "homepage": "https://github.com/Neem2004/android-mcp-server#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Neem2004"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
+  }
+}
