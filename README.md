@@ -44,9 +44,11 @@ This produces the compiled code in the `dist/` folder.
 
 > ⚠️ **Important:** `dist/` is generated locally and is **not** committed to the repository. You **must** run `npm run build` before configuring your MCP client, or the server will fail to start.
 
+> 💡 **Quick start (published on npm):** you can skip the clone and build entirely — the server is published as **`@neem2004/android-mcp-server`** and includes the compiled `dist/`. Run it directly with `npx -y @neem2004/android-mcp-server`, as shown in the configs below. The **absolute path** form targets a local clone (replace `YOUR_PATH_TO` with its location).
+
 #### 3. Configure your MCP client
 
-Each MCP client keeps its servers in a different file, with a different format. Below are the three most common setups. In every case you must use the **absolute path** to your cloned project's `dist/index.js` (replace `YOUR_PATH_TO` with the real location of your clone).
+Each MCP client keeps its servers in a different file, with a different format. Below are the three most common setups, each with the published-package form (`npx`) and the local-clone alternative.
 
 ##### OpenCode (AI assistant / CLI)
 
@@ -57,12 +59,14 @@ File: `opencode.json` at your project root, or `~/.config/opencode/opencode.json
   "mcp": {
     "android": {
       "type": "local",
-      "command": ["node", "YOUR_PATH_TO/android-mcp-server/dist/index.js"],
+      "command": ["npx", "-y", "@neem2004/android-mcp-server"],
       "enabled": true
     }
   }
 }
 ```
+
+Local clone alternative — `"command": ["node", "YOUR_PATH_TO/android-mcp-server/dist/index.js"]`.
 
 ##### Claude Desktop (AI assistant)
 
@@ -72,12 +76,14 @@ File: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Appl
 {
   "mcpServers": {
     "android": {
-      "command": "node",
-      "args": ["YOUR_PATH_TO/android-mcp-server/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "@neem2004/android-mcp-server"]
     }
   }
 }
 ```
+
+Local clone alternative — `"command": "node"` with `"args": ["YOUR_PATH_TO/android-mcp-server/dist/index.js"]`.
 
 ##### VS Code (editor with Copilot / MCP agent support)
 
@@ -88,12 +94,14 @@ File: `.vscode/mcp.json` in your workspace (or via the **MCP: Open User Configur
   "servers": {
     "android": {
       "type": "stdio",
-      "command": "node",
-      "args": ["YOUR_PATH_TO/android-mcp-server/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "@neem2004/android-mcp-server"]
     }
   }
 }
 ```
+
+Local clone alternative — `"command": "node"` with `"args": ["YOUR_PATH_TO/android-mcp-server/dist/index.js"]`.
 
 > **Development note:** instead of the compiled build you can run TypeScript directly via `tsx` by replacing the argument with `src/index.ts` and using `npx tsx` as the command. Prefer the compiled build for reliability.
 
@@ -189,9 +197,11 @@ Esto genera el código compilado en la carpeta `dist/`.
 
 > ⚠️ **Importante:** `dist/` se genera localmente y **no** se sube al repositorio. Debes ejecutar `npm run build` **antes** de configurar tu cliente MCP, o el servidor no arrancará.
 
+> 💡 **Inicio rápido (publicado en npm):** puedes saltarte el clonado y la compilación — el servidor está publicado como **`@neem2004/android-mcp-server`** e incluye el `dist/` compilado. Ejecútalo directamente con `npx -y @neem2004/android-mcp-server`, como muestran las configuraciones de abajo. La forma de **ruta absoluta** apunta a un clon local (reemplaza `TU_RUTA` por su ubicación).
+
 #### 3. Configurar tu cliente MCP
 
-Cada cliente MCP guarda sus servidores en un archivo distinto, con un formato propio. A continuación están las tres configuraciones más comunes. En todos los casos debes usar la **ruta absoluta** al `dist/index.js` de tu clon (reemplaza `TU_RUTA` por la ubicación real de tu clon).
+Cada cliente MCP guarda sus servidores en un archivo distinto, con un formato propio. A continuación están las tres configuraciones más comunes, cada una con la forma de paquete publicado (`npx`) y la alternativa de clon local.
 
 ##### OpenCode (asistente de IA / CLI)
 
@@ -202,12 +212,14 @@ Archivo: `opencode.json` en la raíz de tu proyecto, o `~/.config/opencode/openc
   "mcp": {
     "android": {
       "type": "local",
-      "command": ["node", "TU_RUTA/android-mcp-server/dist/index.js"],
+      "command": ["npx", "-y", "@neem2004/android-mcp-server"],
       "enabled": true
     }
   }
 }
 ```
+
+Alternativa de clon local — `"command": ["node", "TU_RUTA/android-mcp-server/dist/index.js"]`.
 
 ##### Claude Desktop (asistente de IA)
 
@@ -217,12 +229,14 @@ Archivo: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) o `~/Library/Ap
 {
   "mcpServers": {
     "android": {
-      "command": "node",
-      "args": ["TU_RUTA/android-mcp-server/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "@neem2004/android-mcp-server"]
     }
   }
 }
 ```
+
+Alternativa de clon local — `"command": "node"` con `"args": ["TU_RUTA/android-mcp-server/dist/index.js"]`.
 
 ##### VS Code (editor con soporte de Copilot / agente MCP)
 
@@ -233,12 +247,14 @@ Archivo: `.vscode/mcp.json` en tu workspace (o mediante el comando **MCP: Open U
   "servers": {
     "android": {
       "type": "stdio",
-      "command": "node",
-      "args": ["TU_RUTA/android-mcp-server/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "@neem2004/android-mcp-server"]
     }
   }
 }
 ```
+
+Alternativa de clon local — `"command": "node"` con `"args": ["TU_RUTA/android-mcp-server/dist/index.js"]`.
 
 > **Nota de desarrollo:** en lugar del build compilado puedes ejecutar TypeScript directamente con `tsx` reemplazando el argumento por `src/index.ts` y usando `npx tsx` como comando. Para máxima fiabilidad, prefiere el build compilado.
 
