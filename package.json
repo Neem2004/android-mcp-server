@@ -27,6 +27,9 @@
   },
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Neem2004/android-mcp-server.git"

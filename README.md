@@ -14,7 +14,9 @@
 
 ### Description
 
-**Android ADB MCP Server** is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that lets AI assistants — Claude, OpenCode, and VS Code — control Android devices over ADB securely. It exposes tools to read `logcat`, inspect the current UI hierarchy, list installed packages, and run restricted shell commands, all gated by an allowlist that mitigates arbitrary command execution.
+**Android ADB MCP Server** is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that lets AI assistants — such as **Claude** and **OpenCode**, or **VS Code** through its Copilot/agent integration — control Android devices over ADB securely. It exposes tools to read `logcat`, inspect the current UI hierarchy, list installed packages, and run restricted shell commands, all gated by an allowlist that mitigates arbitrary command execution.
+
+> **A note on terminology:** Claude and OpenCode are AI assistants. **VS Code is not an AI** — it is a code editor that *hosts* AI assistants (GitHub Copilot, and MCP-capable extensions) and is itself an MCP client. The server works with any MCP-capable client.
 
 ### Prerequisites
 
@@ -40,33 +42,60 @@ npm run build
 
 This produces the compiled code in the `dist/` folder.
 
-#### 3. Configure in your MCP client (OpenCode, Claude, VS Code)
+> ⚠️ **Important:** `dist/` is generated locally and is **not** committed to the repository. You **must** run `npm run build` before configuring your MCP client, or the server will fail to start.
 
-Add the server to the `mcpServers` block. The recommended way uses the compiled build, which is the most reliable across platforms:
+#### 3. Configure your MCP client
+
+Each MCP client keeps its servers in a different file, with a different format. Below are the three most common setups. In every case you must use the **absolute path** to your cloned project's `dist/index.js` (replace `YOUR_PATH_TO` with the real location of your clone).
+
+##### OpenCode (AI assistant / CLI)
+
+File: `opencode.json` at your project root, or `~/.config/opencode/opencode.json` (global).
+
+```jsonc
+{
+  "mcp": {
+    "android": {
+      "type": "local",
+      "command": ["node", "YOUR_PATH_TO/android-mcp-server/dist/index.js"],
+      "enabled": true
+    }
+  }
+}
+```
+
+##### Claude Desktop (AI assistant)
+
+File: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS).
 
 ```json
 {
   "mcpServers": {
     "android": {
       "command": "node",
-      "args": ["dist/index.js"]
+      "args": ["YOUR_PATH_TO/android-mcp-server/dist/index.js"]
     }
   }
 }
 ```
 
-> For development you can also run TypeScript directly via `tsx`:
->
-> ```json
-> {
->   "mcpServers": {
->     "android": {
->       "command": "npx",
->       "args": ["tsx", "src/index.ts"]
->     }
->   }
-> }
-> ```
+##### VS Code (editor with Copilot / MCP agent support)
+
+File: `.vscode/mcp.json` in your workspace (or via the **MCP: Open User Configuration** command). VS Code uses `servers` as the top-level key (not `mcpServers`).
+
+```json
+{
+  "servers": {
+    "android": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["YOUR_PATH_TO/android-mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+> **Development note:** instead of the compiled build you can run TypeScript directly via `tsx` by replacing the argument with `src/index.ts` and using `npx tsx` as the command. Prefer the compiled build for reliability.
 
 #### 4. Basic validation
 
@@ -130,7 +159,9 @@ ISC
 
 ### Descripción
 
-**Android ADB MCP Server** es un servidor del [Model Context Protocol (MCP)](https://modelcontextprotocol.io) que permite a asistentes de IA —como Claude, OpenCode y VS Code— controlar dispositivos Android vía ADB de forma segura. Expone herramientas para leer el `logcat`, inspeccionar la jerarquía de la UI, listar paquetes instalados y ejecutar comandos shell restringidos, todo a través de una lista blanca que mitiga los riesgos de ejecución arbitraria.
+**Android ADB MCP Server** es un servidor del [Model Context Protocol (MCP)](https://modelcontextprotocol.io) que permite a asistentes de IA —como **Claude** y **OpenCode**, o **VS Code** mediante su integración con Copilot/agente— controlar dispositivos Android vía ADB de forma segura. Expone herramientas para leer el `logcat`, inspeccionar la jerarquía de la UI, listar paquetes instalados y ejecutar comandos shell restringidos, todo a través de una lista blanca que mitiga los riesgos de ejecución arbitraria.
+
+> **Nota sobre terminología:** Claude y OpenCode son asistentes de IA. **VS Code no es una IA** — es un editor de código que *aloja* asistentes de IA (GitHub Copilot y extensiones con soporte MCP) y que además es un cliente MCP. El servidor funciona con cualquier cliente compatible con MCP.
 
 ### Requisitos previos
 
@@ -156,33 +187,60 @@ npm run build
 
 Esto genera el código compilado en la carpeta `dist/`.
 
-#### 3. Configurar en tu cliente MCP (OpenCode, Claude, VS Code)
+> ⚠️ **Importante:** `dist/` se genera localmente y **no** se sube al repositorio. Debes ejecutar `npm run build` **antes** de configurar tu cliente MCP, o el servidor no arrancará.
 
-Agrega el servidor al bloque `mcpServers`. La forma recomendada usa el build compilado, que es la más fiable entre plataformas:
+#### 3. Configurar tu cliente MCP
+
+Cada cliente MCP guarda sus servidores en un archivo distinto, con un formato propio. A continuación están las tres configuraciones más comunes. En todos los casos debes usar la **ruta absoluta** al `dist/index.js` de tu clon (reemplaza `TU_RUTA` por la ubicación real de tu clon).
+
+##### OpenCode (asistente de IA / CLI)
+
+Archivo: `opencode.json` en la raíz de tu proyecto, o `~/.config/opencode/opencode.json` (global).
+
+```jsonc
+{
+  "mcp": {
+    "android": {
+      "type": "local",
+      "command": ["node", "TU_RUTA/android-mcp-server/dist/index.js"],
+      "enabled": true
+    }
+  }
+}
+```
+
+##### Claude Desktop (asistente de IA)
+
+Archivo: `%APPDATA%\Claude\claude_desktop_config.json` (Windows) o `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS).
 
 ```json
 {
   "mcpServers": {
     "android": {
       "command": "node",
-      "args": ["dist/index.js"]
+      "args": ["TU_RUTA/android-mcp-server/dist/index.js"]
     }
   }
 }
 ```
 
-> Para desarrollo también puedes ejecutar TypeScript directamente con `tsx`:
->
-> ```json
-> {
->   "mcpServers": {
->     "android": {
->       "command": "npx",
->       "args": ["tsx", "src/index.ts"]
->     }
->   }
-> }
-> ```
+##### VS Code (editor con soporte de Copilot / agente MCP)
+
+Archivo: `.vscode/mcp.json` en tu workspace (o mediante el comando **MCP: Open User Configuration**). VS Code usa `servers` como clave raíz (no `mcpServers`).
+
+```json
+{
+  "servers": {
+    "android": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["TU_RUTA/android-mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+> **Nota de desarrollo:** en lugar del build compilado puedes ejecutar TypeScript directamente con `tsx` reemplazando el argumento por `src/index.ts` y usando `npx tsx` como comando. Para máxima fiabilidad, prefiere el build compilado.
 
 #### 4. Validación básica
 
