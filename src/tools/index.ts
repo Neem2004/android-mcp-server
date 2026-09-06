@@ -35,22 +35,30 @@ export const tools: Tool[] = [
   {
     name: "adb_get_logcat",
     description:
-      "Obtiene el buffer de logcat del dispositivo Android, opcionalmente filtrado por tag, nivel de log y limitado a las últimas N líneas.",
+      "Dumps the Android device logcat buffer, optionally filtered by tag, minimum log level and limited to the last N lines. / Vuelca el buffer de logcat del dispositivo Android, opcionalmente filtrado por tag, nivel mínimo de log y limitado a las últimas N líneas.",
     inputSchema: {
       type: "object",
       properties: {
         lines: {
           type: "number",
-          description: "Número de últimas líneas a retornar.",
+          description:
+            "Number of last lines to return (defaults to the full buffer). / Número de últimas líneas a retornar (por defecto, el buffer completo).",
+          default: 200,
+          minimum: 1,
+          examples: [200, 1000],
         },
         filter_tag: {
           type: "string",
-          description: "Filtra entradas por tag (etiqueta de log).",
+          description:
+            "Only include entries whose tag matches this log tag (e.g. MyApp). / Incluye solo entradas cuyo tag coincida (p. ej. MyApp).",
+          examples: ["MyApp", "ActivityManager"],
         },
         log_level: {
           type: "string",
           enum: ["V", "D", "I", "W", "E", "F"],
-          description: "Nivel mínimo de log a incluir.",
+          description:
+            "Minimum log level to include (V=verbose … F=fatal). Requires filter_tag to take effect. / Nivel mínimo de log a incluir (V=verbose … F=fatal). Requiere filter_tag para tener efecto.",
+          examples: ["D", "E"],
         },
       },
       required: [],
@@ -58,7 +66,8 @@ export const tools: Tool[] = [
   },
   {
     name: "adb_clear_logcat",
-    description: "Limpia el buffer de logcat del dispositivo Android.",
+    description:
+      "Clears the device logcat buffer and returns a confirmation message. Use it before capturing a clean log stream. / Limpia el buffer de logcat del dispositivo y devuelve un mensaje de confirmación. Útil antes de capturar un stream de logs limpio.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -68,7 +77,7 @@ export const tools: Tool[] = [
   {
     name: "adb_dump_hierarchy",
     description:
-      "Obtiene la jerarquía de la UI actual del dispositivo Android como texto/XML.",
+      "Returns the current UI hierarchy of the Android device as XML/text via uiautomator. Useful for UI automation and understanding the visible layout. / Devuelve la jerarquía de la UI actual del dispositivo Android como texto/XML vía uiautomator. Útil para automatización de UI y entender el layout visible.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -78,17 +87,22 @@ export const tools: Tool[] = [
   {
     name: "adb_list_packages",
     description:
-      "Lista los paquetes instalados del dispositivo Android, con filtro por nombre y opción de incluir paquetes de sistema.",
+      "Lists the packages installed on the Android device (third-party only by default), optionally filtered by a case-insensitive name substring and including system packages. / Lista los paquetes instalados del dispositivo Android (solo de terceros por defecto), con filtro opcional por subcadena del nombre sin distinguir mayúsculas y opción de incluir paquetes de sistema.",
     inputSchema: {
       type: "object",
       properties: {
         filter: {
           type: "string",
-          description: "Filtra los paquetes por texto en el nombre.",
+          description:
+            "Only list packages whose name contains this text (case-insensitive). / Lista solo paquetes cuyo nombre contenga este texto (sin distinguir mayúsculas).",
+          examples: ["com.example", "google"],
         },
         include_system: {
           type: "boolean",
-          description: "Si es true, incluye paquetes de sistema (sin -3).",
+          description:
+            "If true, include system packages; if false or omitted, only third-party packages are listed. / Si es true, incluye paquetes de sistema; si es false u omitido, solo lista paquetes de terceros.",
+          default: false,
+          examples: [true, false],
         },
       },
       required: [],
@@ -97,13 +111,20 @@ export const tools: Tool[] = [
   {
     name: "adb_execute_shell",
     description:
-      "Ejecuta un comando shell seguro en el dispositivo Android a través de una lista blanca de comandos.",
+      "Runs a safe shell command on the Android device, restricted to an allowlist of read-only prefixes (getprop, dumpsys, pm list). Command chaining, pipes and injection metacharacters are rejected. / Ejecuta un comando shell seguro en el dispositivo Android, restringido a una lista blanca de prefijos de solo lectura (getprop, dumpsys, pm list). Se rechazan encadenamientos, tuberías y metacaracteres de inyección.",
     inputSchema: {
       type: "object",
       properties: {
         command: {
           type: "string",
-          description: "Comando shell a ejecutar (solo comandos permitidos).",
+          description:
+            "Shell command to execute. Must start with one of the allowlisted prefixes: getprop, dumpsys or pm list. / Comando shell a ejecutar. Debe comenzar con uno de los prefijos permitidos: getprop, dumpsys o pm list.",
+          pattern: "^(getprop|dumpsys|pm list)(\\s|$)",
+          examples: [
+            "getprop ro.build.version.release",
+            "dumpsys battery",
+            "pm list packages -3",
+          ],
         },
       },
       required: ["command"],

@@ -1,6 +1,6 @@
 {
   "name": "@neem2004/android-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server that lets AI assistants (Claude, OpenCode, VS Code) control Android devices securely via ADB.",
   "main": "dist/index.js",
   "bin": {
