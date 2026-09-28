@@ -35,29 +35,33 @@ export const tools: Tool[] = [
   {
     name: "adb_get_logcat",
     description:
-      "Dumps the Android device logcat buffer, optionally filtered by tag, minimum log level and limited to the last N lines. / Vuelca el buffer de logcat del dispositivo Android, opcionalmente filtrado por tag, nivel mínimo de log y limitado a las últimas N líneas.",
+      "Dumps and exits the Android logcat buffer (logcat -d; not a stream), returning newline-separated lines with blank lines removed. Optionally filters by tag, minimum log level and the last N lines. Use filter_tag alone for 'tag:*'; log_level only takes effect together with filter_tag. / Vuelca y cierra el buffer de logcat del dispositivo (logcat -d; no es un stream), devolviendo líneas separadas por saltos de línea y omitiendo las vacías. Filtra opcionalmente por tag, nivel mínimo de log y las últimas N líneas. filter_tag solo produce 'tag:*'; log_level solo tiene efecto junto con filter_tag.",
     inputSchema: {
       type: "object",
       properties: {
         lines: {
           type: "number",
+          title: "lines",
           description:
             "Number of last lines to return (defaults to the full buffer). / Número de últimas líneas a retornar (por defecto, el buffer completo).",
           default: 200,
           minimum: 1,
+          maximum: 1000,
           examples: [200, 1000],
         },
         filter_tag: {
           type: "string",
+          title: "filter_tag",
           description:
             "Only include entries whose tag matches this log tag (e.g. MyApp). / Incluye solo entradas cuyo tag coincida (p. ej. MyApp).",
           examples: ["MyApp", "ActivityManager"],
         },
         log_level: {
           type: "string",
+          title: "log_level",
           enum: ["V", "D", "I", "W", "E", "F"],
           description:
-            "Minimum log level to include (V=verbose … F=fatal). Requires filter_tag to take effect. / Nivel mínimo de log a incluir (V=verbose … F=fatal). Requiere filter_tag para tener efecto.",
+            "Minimum log level to include (V=verbose … F=fatal). Requires filter_tag to take effect; ignored otherwise. / Nivel mínimo de log a incluir (V=verbose … F=fatal). Requiere filter_tag para tener efecto; se ignora si no va.",
           examples: ["D", "E"],
         },
       },
@@ -67,7 +71,7 @@ export const tools: Tool[] = [
   {
     name: "adb_clear_logcat",
     description:
-      "Clears the device logcat buffer and returns a confirmation message. Use it before capturing a clean log stream. / Limpia el buffer de logcat del dispositivo y devuelve un mensaje de confirmación. Útil antes de capturar un stream de logs limpio.",
+      "Permanently clears the device logcat buffer (logcat -c) and returns a confirmation message. All buffered log entries are lost; subsequent dumps start fresh. Run it before capturing a clean log stream. / Limpia permanentemente el buffer de logcat del dispositivo (logcat -c) y devuelve un mensaje de confirmación. Se pierden todas las entradas en buffer; los dumps posteriores empiezan desde cero. Ejecútalo antes de capturar un stream de logs limpio.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -77,7 +81,7 @@ export const tools: Tool[] = [
   {
     name: "adb_dump_hierarchy",
     description:
-      "Returns the current UI hierarchy of the Android device as XML/text via uiautomator. Useful for UI automation and understanding the visible layout. / Devuelve la jerarquía de la UI actual del dispositivo Android como texto/XML vía uiautomator. Útil para automatización de UI y entender el layout visible.",
+      "Returns the current UI hierarchy of the Android device as XML/text via uiautomator. Tries /dev/tty first and falls back to /sdcard/window_dump.xml. May return empty when no window is focused. Useful to understand the visible layout. / Devuelve la jerarquía de la UI actual del dispositivo como texto/XML vía uiautomator. Prueba /dev/tty primero y cae a /sdcard/window_dump.xml como respaldo. Puede devolver vacío cuando no hay ventana enfocada. Útil para entender el layout visible.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -87,18 +91,20 @@ export const tools: Tool[] = [
   {
     name: "adb_list_packages",
     description:
-      "Lists the packages installed on the Android device (third-party only by default), optionally filtered by a case-insensitive name substring and including system packages. / Lista los paquetes instalados del dispositivo Android (solo de terceros por defecto), con filtro opcional por subcadena del nombre sin distinguir mayúsculas y opción de incluir paquetes de sistema.",
+      "Lists the packages installed on the Android device as one 'package:<name>' line each (third-party only by default). Optionally filters by a case-insensitive name substring and includes system packages. / Lista los paquetes instalados del dispositivo con una línea 'package:<name>' por cada uno (solo de terceros por defecto). Filtra opcionalmente por subcadena del nombre sin distinguir mayúsculas e incluye paquetes de sistema.",
     inputSchema: {
       type: "object",
       properties: {
         filter: {
           type: "string",
+          title: "filter",
           description:
             "Only list packages whose name contains this text (case-insensitive). / Lista solo paquetes cuyo nombre contenga este texto (sin distinguir mayúsculas).",
           examples: ["com.example", "google"],
         },
         include_system: {
           type: "boolean",
+          title: "include_system",
           description:
             "If true, include system packages; if false or omitted, only third-party packages are listed. / Si es true, incluye paquetes de sistema; si es false u omitido, solo lista paquetes de terceros.",
           default: false,
@@ -111,12 +117,13 @@ export const tools: Tool[] = [
   {
     name: "adb_execute_shell",
     description:
-      "Runs a safe shell command on the Android device, restricted to an allowlist of read-only prefixes (getprop, dumpsys, pm list). Command chaining, pipes and injection metacharacters are rejected. / Ejecuta un comando shell seguro en el dispositivo Android, restringido a una lista blanca de prefijos de solo lectura (getprop, dumpsys, pm list). Se rechazan encadenamientos, tuberías y metacaracteres de inyección.",
+      "Runs a read-only shell command on the Android device, restricted to an allowlist of safe prefixes: getprop (read system properties), dumpsys (dump services) and pm list (list packages). Anything else — including command chaining (&&, ||, ;, |) and injection metacharacters — is rejected with a descriptive error. / Ejecuta un comando shell de solo lectura en el dispositivo Android, restringido a la lista blanca de prefijos seguros: getprop (propiedades del sistema), dumpsys (volcado de servicios) y pm list (listado de paquetes). Cualquier otra cosa —incluidos encadenamientos (&&, ||, ;, |) y metacaracteres de inyección— se rechaza con un error descriptivo.",
     inputSchema: {
       type: "object",
       properties: {
         command: {
           type: "string",
+          title: "command",
           description:
             "Shell command to execute. Must start with one of the allowlisted prefixes: getprop, dumpsys or pm list. / Comando shell a ejecutar. Debe comenzar con uno de los prefijos permitidos: getprop, dumpsys o pm list.",
           pattern: "^(getprop|dumpsys|pm list)(\\s|$)",
