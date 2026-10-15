@@ -5,6 +5,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-ES2022-blue)
 ![License](https://img.shields.io/badge/License-ISC-lightgrey)
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub-Sponsor-EA4AAA)](https://github.com/sponsors/Neem2004)
+[![Listed on awesome-remote-mcp-servers](https://img.shields.io/badge/Listed_on-awesome--remote--mcp--servers-blue?logo=github)](https://github.com/Appnova-EU-OU/awesome-remote-mcp-servers)
 
 **[English](#english) · [Español](#espanol)**
 
