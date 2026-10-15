@@ -134,6 +134,19 @@ This server prioritizes safety over arbitrary command execution:
 
 > The logic lives in `src/adb/security.ts`; review it before broadening permissions.
 
+### Skill for AI agents (free)
+
+A ready-made **`SKILL.md`** that teaches an agent *when and how* to use this
+server lives in [`skills/android-adb/`](skills/android-adb/SKILL.md). It is
+compatible with any agent that reads the SKILL.md standard (Claude Code, Cursor,
+Codex CLI, Copilot, OpenCode, and more).
+
+It is also published as a free skill on the [Agensi](https://www.agensi.io)
+marketplace as **Android ADB Control** (category: Mobile Development).
+
+> The skill only provides instructions — the agent still needs this MCP server
+> connected to access the `adb_*` tools.
+
 ### Setting Up ADB
 
 If you do not have ADB yet:
@@ -286,6 +299,20 @@ Este servidor prioriza la seguridad frente a la ejecución arbitraria de comando
 - Los comandos se ejecutan mediante `execFile` (sin pasar por un shell intermedio), evitando la inyección de metacaracteres.
 
 > La lógica vive en `src/adb/security.ts`; revísalo antes de ampliar los permisos.
+
+### Skill para agentes de IA (gratis)
+
+Un **`SKILL.md`** listo para usar que le enseña al agente *cuándo y cómo* usar
+este servidor está en [`skills/android-adb/`](skills/android-adb/SKILL.md). Es
+compatible con cualquier agente que lea el estándar SKILL.md (Claude Code, Cursor,
+Codex CLI, Copilot, OpenCode y más).
+
+También está publicado como skill gratuito en el marketplace
+[Agensi](https://www.agensi.io) como **Android ADB Control** (categoría: Mobile
+Development).
+
+> El skill solo aporta instrucciones — el agente sigue necesitando este servidor
+> MCP conectado para acceder a las tools `adb_*`.
 
 ### Configuración de ADB
 
